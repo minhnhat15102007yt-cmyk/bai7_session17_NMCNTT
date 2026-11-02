@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bài 2 session 17</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2 id="phần-1-phân-tích-sự-cố">Phần 1: Phân tích sự cố</h2>
+<h3 id="lỗi-sai-của-thực-tập-sinh">1. 4 lỗi sai của thực tập sinh</h3>
+<ul>
+<li><strong>Sai về DNS:</strong> Nghĩ không cần DNS mà gửi thẳng URL tới Web Server.  <em>(Thực tế bắt buộc phải qua DNS để đổi tên miền thành IP).</em>
+<ul>
+<li><strong>Sai về TCP/TLS:</strong> Nghĩ không cần bắt tay mạng.  <em>(Thực tế bắt buộc phải có TCP 3-way handshake và TLS handshake để mở kết nối an toàn).</em></li>
+<li><strong>Sai về Mã lỗi HTTP:</strong> Lỗi sập Database nhưng lại trả về 404 Not Found và bảo mất hồ sơ.  <em>(Thực tế lỗi server phải trả về 500 Internal Server Error).</em></li>
+<li><strong>Sai về Tab Elements (DevTools):</strong> Tưởng gõ sửa chữ trên màn hình là đổi được dữ liệu gốc trên máy chủ.  <em>(Thực tế chỉ đổi tạm trên RAM máy cá nhân).</em></li>
+</ul>
+</li>
+</ul>
+<h3 id="phân-tích-mã-500-vs-404-và-hậu-quả-tâm-lý">2. Phân tích mã 500 vs 404 và Hậu quả tâm lý</h3>
+<ul>
+<li><strong>Vì sao là 500?</strong>  404 là sai đường dẫn/mất trang; còn 500 là lỗi nội bộ server/database bị sập. Sập database phải báo 500.
+<ul>
+<li><strong>Hậu quả tâm lý:</strong> Báo nhầm 404 (“đã xóa vĩnh viễn hồ sơ”) sẽ làm bệnh nhân <strong>hoảng loạn, lo sợ mất dữ liệu khám bệnh</strong>, mất niềm tin nghiêm trọng vào hệ thống y tế.</li>
+</ul>
+</li>
+</ul>
+<h2 id="phần-2-sửa-lỗi--giải-pháp">Phần 2: Sửa lỗi &amp; Giải pháp</h2>
+<h3 id="biên-bản-kỹ-thuật-chuẩn-xác-theo-vòng-đời-http">3. Biên bản kỹ thuật chuẩn xác theo Vòng đời HTTP</h3>
+<ol>
+<li><strong>DNS Lookup:</strong> Phân giải tên miền <a href="http://carepulse.vn">carepulse.vn</a> thành địa chỉ IP máy chủ.<br>
+2.  <strong>TCP/TLS Handshake:</strong> Bắt tay 3 bước và thiết lập mã hóa bảo mật HTTPS.<br>
+3.  <strong>HTTP Request &amp; Response:</strong> Gửi yêu cầu lấy dữ liệu; Server phản hồi mã <strong>500 Internal Server Error</strong> do lỗi Database.<br>
+4.  <strong>Rendering Pipeline:</strong> Trình duyệt dựng giao diện thông báo lỗi hệ thống tạm thời để người dùng nắm bắt.</li>
+</ol>
+<h3 id="vì-sao-sửa-trên-devtools-không-lưu-vào-máy-chủ">4. Vì sao sửa trên DevTools không lưu vào máy chủ?</h3>
+<ul>
+<li><strong>Client-side vs Server-side:</strong> Dữ liệu sửa trên DevTools chỉ nằm tạm trên <strong>bộ nhớ RAM của máy tính cá nhân</strong>, còn dữ liệu thật nằm trên <strong>Database của máy chủ</strong>.
+<ul>
+<li><strong>Không gửi request:</strong> Thao tác gõ phím đó không tạo ra gói tin mạng nào gửi về server.</li>
+<li><strong>Mất khi F5:</strong> Chỉ cần bấm tải lại trang (F5), trình duyệt gọi lại server và dữ liệu gốc sẽ ghi đè ngay lập tức.</li>
+</ul>
+</li>
+</ul>
+</div>
+</body>
+
+</html>
